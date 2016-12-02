@@ -64,7 +64,8 @@
   var EVENT_ZOOM = 'zoom.' + NAMESPACE;
 
   // RegExps
-  var REGEXP_ACTIONS = /^(e|w|s|n|se|sw|ne|nw|all|crop|move|zoom)$/;
+  // var REGEXP_ACTIONS = /^(e|w|s|n|se|sw|ne|nw|all|crop|move|zoom)$/;
+  var REGEXP_ACTIONS = /^(all|move|zoom)$/;
   var REGEXP_DATA_URL = /^data:/;
   var REGEXP_DATA_URL_HEAD = /^data:([^;]+);base64,/;
   var REGEXP_DATA_URL_JPEG = /^data:image\/jpeg.*;base64,/;
@@ -438,6 +439,7 @@
     this.canvas = null;
     this.cropBox = null;
     this.init();
+    this.isinit = false;
   }
 
   Cropper.prototype = {
@@ -665,6 +667,7 @@
       var $cropper;
       var $cropBox;
       var $face;
+      var $cropMassege
 
       if (!this.isLoaded) {
         return;
@@ -683,6 +686,7 @@
       this.$cropBox = $cropBox = $cropper.find('.cropper-crop-box');
       this.$viewBox = $cropper.find('.cropper-view-box');
       this.$face = $face = $cropBox.find('.cropper-face');
+      this.$cropMassege = $cropMassege = $cropBox.find('.cropper-text-massege');
 
       // Hide the original image
       $this.addClass(CLASS_HIDDEN).after($cropper);
@@ -1210,11 +1214,22 @@
 
       this.limitCropBox(false, true);
 
-      cropBox.oldLeft = cropBox.left = min(max(cropBox.left, cropBox.minLeft), cropBox.maxLeft);
-      cropBox.oldTop = cropBox.top = min(max(cropBox.top, cropBox.minTop), cropBox.maxTop);
+      if (this.isinit) {
+        this.isinit = false
+        // 调整： 依照业务需求，每一次改变改变裁切框数据后都将裁切框居中显示（为什么因为我们现在的裁切框不能手动拖拽大小）
+        cropBox.oldLeft = cropBox.left = this.canvas.left + (this.canvas.width - cropBox.width) / 2;
+        cropBox.oldTop = cropBox.top = this.canvas.top + (this.canvas.height - cropBox.height) / 2;
+      } else {
+        // 原逻辑中： 在重新设置数据后不改变裁切框的位置，使用的还是初始化生成的位置
+        cropBox.oldLeft = cropBox.left = min(max(cropBox.left, cropBox.minLeft), cropBox.maxLeft);
+        cropBox.oldTop = cropBox.top = min(max(cropBox.top, cropBox.minTop), cropBox.maxTop);
+      }
+
+      // 原逻辑中： 在重新设置数据后不改变裁切框的位置，使用的还是初始化生成的位置
+      // cropBox.oldLeft = cropBox.left = min(max(cropBox.left, cropBox.minLeft), cropBox.maxLeft);
+      // cropBox.oldTop = cropBox.top = min(max(cropBox.top, cropBox.minTop), cropBox.maxTop);
 
       if (options.movable && options.cropBoxMovable) {
-
         // Turn to move the canvas when the crop box is equal to the container
         this.$face.data(DATA_ACTION, (cropBox.width === containerWidth && cropBox.height === containerHeight) ? ACTION_MOVE : ACTION_ALL);
       }
@@ -1225,6 +1240,9 @@
         left: cropBox.left,
         top: cropBox.top
       });
+
+      // 裁切框右下角信息
+      this.$cropMassege.html(this.options.data.width + '*' + this.options.data.height)
 
       if (this.isCropped && this.isLimited) {
         this.limitCanvas(true, true);
@@ -2452,6 +2470,7 @@
       var isRotated;
       var isScaled;
       var ratio;
+      this.isinit = true
 
       if ($.isFunction(data)) {
         data = data.call(this.element);
@@ -2958,6 +2977,7 @@
         '<span class="cropper-point point-nw" data-action="nw"></span>' +
         '<span class="cropper-point point-sw" data-action="sw"></span>' +
         '<span class="cropper-point point-se" data-action="se"></span>' +
+        '<span class="cropper-text-massege"></span>' +
       '</div>' +
     '</div>'
   );
