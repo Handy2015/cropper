@@ -58,6 +58,7 @@
 }
 
 .cropper-crop-box {
+  pointer-events: none;
   transition: width 0.3s, height 0.3s;
 }
 
