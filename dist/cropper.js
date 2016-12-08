@@ -1214,21 +1214,25 @@
 
       this.limitCropBox(false, true);
 
-      if (this.isinit) {
-        this.isinit = false
+      // if (this.isinit) {
+      //   this.isinit = false
 
-        this.canvas.oldLeft = this.canvas.left = (this.container.width - this.canvas.width) / 2;
-        this.canvas.oldTop = this.canvas.top = (this.container.height - this.canvas.height) / 2;
-        this.renderCanvas();
+      //   this.canvas.oldLeft = this.canvas.left = (this.container.width - this.canvas.width) / 2;
+      //   this.canvas.oldTop = this.canvas.top = (this.container.height - this.canvas.height) / 2;
+      //   this.renderCanvas();
 
-        // 调整： 依照业务需求，每一次改变改变裁切框数据后都将裁切框居中显示（为什么因为我们现在的裁切框不能手动拖拽大小）
-        cropBox.oldLeft = cropBox.left = this.canvas.left + (this.canvas.width - cropBox.width) / 2;
-        cropBox.oldTop = cropBox.top = this.canvas.top + (this.canvas.height - cropBox.height) / 2;
-      } else {
-        // 原逻辑中： 在重新设置数据后不改变裁切框的位置，使用的还是初始化生成的位置
-        cropBox.oldLeft = cropBox.left = min(max(cropBox.left, cropBox.minLeft), cropBox.maxLeft);
-        cropBox.oldTop = cropBox.top = min(max(cropBox.top, cropBox.minTop), cropBox.maxTop);
-      }
+      //   // 调整： 依照业务需求，每一次改变改变裁切框数据后都将裁切框居中显示（为什么因为我们现在的裁切框不能手动拖拽大小）
+      //   cropBox.oldLeft = cropBox.left = this.canvas.left + (this.canvas.width - cropBox.width) / 2;
+      //   cropBox.oldTop = cropBox.top = this.canvas.top + (this.canvas.height - cropBox.height) / 2;
+      // } else {
+      //   // 原逻辑中： 在重新设置数据后不改变裁切框的位置，使用的还是初始化生成的位置
+      //   cropBox.oldLeft = cropBox.left = min(max(cropBox.left, cropBox.minLeft), cropBox.maxLeft);
+      //   cropBox.oldTop = cropBox.top = min(max(cropBox.top, cropBox.minTop), cropBox.maxTop);
+      // }
+      //
+      // 调整： 依照业务需求，每一次改变改变裁切框数据后都将裁切框居中显示（为什么因为我们现在的裁切框不能手动拖拽大小）
+      cropBox.oldLeft = cropBox.left = this.canvas.left + (this.canvas.width - cropBox.width) / 2;
+      cropBox.oldTop = cropBox.top = this.canvas.top + (this.canvas.height - cropBox.height) / 2;
 
       // 原逻辑中： 在重新设置数据后不改变裁切框的位置，使用的还是初始化生成的位置
       // cropBox.oldLeft = cropBox.left = min(max(cropBox.left, cropBox.minLeft), cropBox.maxLeft);
